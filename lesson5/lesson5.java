@@ -14,7 +14,7 @@ public class lesson5 {
             System.out.println("Element: " + a);
             a++;
         }
-
+        
         int b = 0;
         do{
             System.out.println(b);
