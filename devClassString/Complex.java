@@ -67,6 +67,7 @@ public class Complex
 
     public Complex div(Complex other)
     {
+        
         double tempImaginary = other.imaginary * (-1);
         Complex temp = new Complex(other.real, tempImaginary);
 
@@ -80,7 +81,7 @@ public class Complex
     {
         String str = null;
         switch (i) 
-        {
+        {   
             case 1:
                 if(imaginary < 0)
                     str = String.format("%.2f%.2fi", real, imaginary);
