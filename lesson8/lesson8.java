@@ -20,10 +20,9 @@ public class lesson8 {
 
 
         for(Integer i : numders) //ебать сократили
-        {
             System.out.println(i);
-        }
-        for(int i = 0; i < numders.size();i++) //муторно, но можно
+
+        for(int i = 0; i < numders.size(); i++) //муторно, но можно
         {
             System.out.println(numders.get(i));
         }
@@ -38,6 +37,6 @@ public class lesson8 {
         num.add(7.257f);
 
         for(Float i : num)
-        System.out.println(i);
+            System.out.println(i);
     }
 }
