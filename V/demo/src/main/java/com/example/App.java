@@ -1,66 +1,71 @@
 package com.example;
 
-import edu.cmu.sphinx.api.Configuration;
-import edu.cmu.sphinx.api.LiveSpeechRecognizer;
-import edu.cmu.sphinx.api.SpeechResult;
-
-import com.sun.speech.freetts.Voice;
-import com.sun.speech.freetts.VoiceManager;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
 
 public class App {
 
-    private static final String VOICE_NAME = "kevin16";
+    public static void main(String[] args) throws Throwable {
+        ServerSocket ss = new ServerSocket(12000);
+        while (true) {
+            Socket s = ss.accept();
+            System.err.println("Client accepted");
+            new Thread(new SocketProcessor(s)).start();
+        }
+    }
 
-    public static void main(String[] args)
-    {
-        System.setProperty("freetts.voices", "com.sun.speech.freetts.en.us.cmu_us_kal.KevinVoiceDirectory");
-        
-        try {
-            // Настройка распознавания речи
-            Configuration configuration = new Configuration();
-            configuration.setAcousticModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us");
-            configuration.setDictionaryPath("resource:/edu/cmu/sphinx/models/en-us/cmudict-en-us.dict");
-            configuration.setLanguageModelPath("resource:/edu/cmu/sphinx/models/en-us/en-us.lm.bin");
+    private static class SocketProcessor implements Runnable {
 
-            LiveSpeechRecognizer recognizer = new LiveSpeechRecognizer(configuration);
-            recognizer.startRecognition(true);
+        private Socket s;
+        private InputStream is;
+        private OutputStream os;
 
-            System.out.println("Говорите что-нибудь...");
+        private SocketProcessor(Socket s) throws Throwable {
+            this.s = s;
+            this.is = s.getInputStream();
+            this.os = s.getOutputStream();
+        }
 
-            SpeechResult result;
-            while ((result = recognizer.getResult()) != null) {
-                String command = result.getHypothesis();
-                System.out.println("Вы сказали: " + command);
-                String response = processCommand(command);
-                speak(response);
+        public void run() {
+            try {
+                readInputHeaders();
+                writeResponse("<html><body><h1>Hello World</h1></body></html>");
+            } catch (Throwable t) {
+                /*do nothing*/
+            } finally {
+                try {
+                    s.close();
+                } catch (Throwable t) {
+                    /*do nothing*/
+                }
             }
-
-            recognizer.stopRecognition();
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Client processing finished");
         }
-    }
 
-    private static String processCommand(String command) {
-        String response = "Команда не распознана.";
-        if (command.contains("hello")) {
-            response = "Здравствуйте! Чем могу помочь?";
-        } else if (command.contains("time")) {
-            response = "Сейчас " + java.time.LocalTime.now().toString();
+        private void writeResponse(String s) throws Throwable {
+            String response = "HTTP/1.1 200 OK\r\n" +
+                    "Server: YarServer/2009-09-09\r\n" +
+                    "Content-Type: text/html\r\n" +
+                    "Content-Length: " + s.length() + "\r\n" +
+                    "Connection: close\r\n\r\n";
+            String result = response + s;
+            os.write(result.getBytes());
+            os.flush();
         }
-        return response;
-    }
 
-    private static void speak(String text) {
-        VoiceManager voiceManager = VoiceManager.getInstance();
-        Voice voice = voiceManager.getVoice(VOICE_NAME);
-
-        if (voice != null) {
-            voice.allocate();
-            voice.speak(text);
-            voice.deallocate();
-        } else {
-            System.err.println("Голос " + VOICE_NAME + " не найден.");
+        private void readInputHeaders() throws Throwable {
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            while(true) {
+                String s = br.readLine();
+                if(s == null || s.trim().length() == 0) {
+                    break;
+                }
+            }
         }
     }
 }
+

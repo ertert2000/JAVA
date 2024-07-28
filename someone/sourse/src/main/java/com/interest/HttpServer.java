@@ -1,4 +1,4 @@
-package leranFromSaschka;
+package com.interest;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,10 +7,10 @@ import java.io.OutputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
-public class Main {
+public class HttpServer {
 
-    public static void main() throws Throwable {
-        ServerSocket ss = new ServerSocket(8080);
+    public void startServer() throws Throwable {
+        ServerSocket ss = new ServerSocket(12000);
         while (true) {
             Socket s = ss.accept();
             System.err.println("Client accepted");
@@ -33,11 +33,11 @@ public class Main {
         public void run() {
             try {
                 readInputHeaders();
-                writeResponse("<html><body><h1>Hello from Habrahabr</h1></body></html>");
+                writeResponse("<html><body><h1>PENIS -> github.com/Timokrut </h1></body></html>");
             } catch (Throwable t) {
                 /*do nothing*/
             } finally {
-                try {
+                try {   
                     s.close();
                 } catch (Throwable t) {
                     /*do nothing*/
@@ -68,5 +68,3 @@ public class Main {
         }
     }
 }
-
-

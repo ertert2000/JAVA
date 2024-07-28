@@ -6,6 +6,27 @@
     "configurations": [
         {
             "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "com.example.App",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Server",
+            "request": "launch",
+            "mainClass": "com.example.Server",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "Server",
+            "request": "launch",
+            "mainClass": "Server",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "Client",
             "request": "launch",
             "mainClass": "Client",

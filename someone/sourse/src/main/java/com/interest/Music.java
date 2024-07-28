@@ -5,11 +5,15 @@ import java.io.IOException;
 import javax.sound.sampled.*;
 
 public class Music {
+
+	private static String filePath;
+	private static FloatControl vc;
+	private static int volume;
     
     public static void playMusic()
     {
         try {
-	File soundFile = new File(""); //Звуковой файл
+	File soundFile = new File(filePath); //Звуковой файл
 	
 	//Получаем AudioInputStream
 	//Вот тут могут полететь IOException и UnsupportedAudioFileException
@@ -24,8 +28,7 @@ public class Music {
 	
 	clip.setFramePosition(0); //устанавливаем указатель на старт
 
-    FloatControl vc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-    vc.setValue(-10); 
+    vc = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 	
     clip.start();
 
@@ -39,4 +42,24 @@ public class Music {
 } catch (InterruptedException exc) {}
 
     }
+
+	public static void setFilePath(String path)
+	{
+		filePath = path;
+	}
+
+	public static float getMaxVolume()
+	{
+		return vc.getMaximum();
+	}
+
+	public static float getMinVolume()
+	{
+		return vc.getMinimum();
+	}
+
+	public static void setVolume(int v)
+	{
+		vc.setValue(v);
+	}
 }

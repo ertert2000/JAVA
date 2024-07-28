@@ -1,0 +1,241 @@
+Добавление мультиплеера в вашу игру крестики-нолики предполагает внедрение клиент-серверной архитектуры, чтобы обеспечить взаимодействие между двумя игроками через сеть. Мы будем использовать сокеты TCP для общения между клиентом и сервером.
+
+Серверная часть
+Для начала, создадим сервер, который будет обрабатывать запросы от клиентов, управлять ходами и следить за состоянием игры.
+
+java
+Копировать код
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+public class GameServer {
+    private static byte[][] field = new byte[3][3];
+    private static int count = 0;
+    private static List<ClientHandler> clients = new ArrayList<>();
+    
+    public static void main(String[] args) throws IOException {
+        ServerSocket serverSocket = new ServerSocket(12345);
+        System.out.println("Сервер запущен...");
+
+        while (true) {
+            Socket socket = serverSocket.accept();
+            ClientHandler clientHandler = new ClientHandler(socket, clients.size() + 1);
+            clients.add(clientHandler);
+            new Thread(clientHandler).start();
+        }
+    }
+
+    public static synchronized String handleMove(int x, int y, int playerId) {
+        if (field[x][y] == 0) {
+            field[x][y] = (byte) playerId;
+            count++;
+            return checkWin();
+        }
+        return "INVALID";
+    }
+
+    private static String checkWin() {
+        // Логика проверки выигрыша (аналогичная вашей текущей)
+        // Если есть победитель, возвращаем "WIN <playerId>", если ничья - "DRAW", если нет - "CONTINUE"
+        // Пример:
+        if (/* выигрышное условие для игрока 1 */) {
+            resetGame();
+            return "WIN 1";
+        }
+        if (/* выигрышное условие для игрока 2 */) {
+            resetGame();
+            return "WIN 2";
+        }
+        if (count == 9) {
+            resetGame();
+            return "DRAW";
+        }
+        return "CONTINUE";
+    }
+
+    private static void resetGame() {
+        count = 0;
+        for (int i = 0; i < 3; i++) {
+            Arrays.fill(field[i], (byte) 0);
+        }
+    }
+
+    static class ClientHandler implements Runnable {
+        private Socket socket;
+        private int playerId;
+        private BufferedReader in;
+        private PrintWriter out;
+
+        public ClientHandler(Socket socket, int playerId) throws IOException {
+            this.socket = socket;
+            this.playerId = playerId;
+            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.out = new PrintWriter(socket.getOutputStream(), true);
+            sendMessage("WELCOME " + playerId);
+        }
+
+        @Override
+        public void run() {
+            try {
+                String message;
+                while ((message = in.readLine()) != null) {
+                    String[] parts = message.split(" ");
+                    if (parts[0].equals("MOVE")) {
+                        int x = Integer.parseInt(parts[1]);
+                        int y = Integer.parseInt(parts[2]);
+                        String response = GameServer.handleMove(x, y, playerId);
+                        broadcast(response + " " + x + " " + y + " " + playerId);
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void sendMessage(String message) {
+            out.println(message);
+        }
+
+        private void broadcast(String message) {
+            for (ClientHandler client : clients) {
+                client.sendMessage(message);
+            }
+        }
+    }
+}
+Клиентская часть
+Теперь добавим клиентскую часть в ваше существующее приложение. Клиент будет подключаться к серверу и отправлять свои ходы.
+
+java
+Копировать код
+package com.interest;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.net.*;
+import javax.swing.*;
+
+public class App extends JFrame implements KeyListener {
+    // Ваши текущие переменные
+    // ...
+
+    private static Socket socket;
+    private static BufferedReader in;
+    private static PrintWriter out;
+    private static int playerId;
+
+    public App() {
+        // Инициализация GUI
+        // ...
+
+        try {
+            socket = new Socket("localhost", 12345);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+
+            new Thread(new ServerListener()).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Обработчики кнопок с отправкой ходов на сервер
+        button1.addActionListener(ae -> sendMove(0, 0, button1));
+        button2.addActionListener(ae -> sendMove(0, 1, button2));
+        button3.addActionListener(ae -> sendMove(0, 2, button3));
+        button4.addActionListener(ae -> sendMove(1, 0, button4));
+        button5.addActionListener(ae -> sendMove(1, 1, button5));
+        button6.addActionListener(ae -> sendMove(1, 2, button6));
+        button7.addActionListener(ae -> sendMove(2, 0, button7));
+        button8.addActionListener(ae -> sendMove(2, 1, button8));
+        button9.addActionListener(ae -> sendMove(2, 2, button9));
+
+        toolsSettingsPanel();
+        mainPanel.add(gamePanel, "GAME_PANEL");
+        mainPanel.add(settingsPanel, "SETTINGS_PANEL");
+
+        frame.add(mainPanel);
+        frame.setVisible(true);
+    }
+
+    private void sendMove(int x, int y, JButton button) {
+        if (field[x][y] == 0) {
+            out.println("MOVE " + x + " " + y);
+        }
+    }
+
+    private class ServerListener implements Runnable {
+        @Override
+        public void run() {
+            try {
+                String message;
+                while ((message = in.readLine()) != null) {
+                    String[] parts = message.split(" ");
+                    switch (parts[0]) {
+                        case "WELCOME":
+                            playerId = Integer.parseInt(parts[1]);
+                            break;
+                        case "CONTINUE":
+                            updateBoard(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), Integer.parseInt(parts[3]));
+                            break;
+                        case "WIN":
+                            int winner = Integer.parseInt(parts[1]);
+                            JOptionPane.showMessageDialog(frame, "Выиграл игрок " + winner);
+                            resetBoard();
+                            break;
+                        case "DRAW":
+                            JOptionPane.showMessageDialog(frame, "Боевая ничья!");
+                            resetBoard();
+                            break;
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void updateBoard(int x, int y, int playerId) {
+            JButton button = getButton(x, y);
+            button.setIcon(playerId == 1 ? iconX : icony);
+            field[x][y] = (byte) playerId;
+            count++;
+        }
+
+        private JButton getButton(int x, int y) {
+            // Верните нужную кнопку по координатам
+            if (x == 0 && y == 0) return button1;
+            if (x == 0 && y == 1) return button2;
+            if (x == 0 && y == 2) return button3;
+            if (x == 1 && y == 0) return button4;
+            if (x == 1 && y == 1) return button5;
+            if (x == 1 && y == 2) return button6;
+            if (x == 2 && y == 0) return button7;
+            if (x == 2 && y == 1) return button8;
+            if (x == 2 && y == 2) return button9;
+            return null;
+        }
+
+        private void resetBoard() {
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    field[i][j] = 0;
+                }
+            }
+            button1.setIcon(null);
+            button2.setIcon(null);
+            button3.setIcon(null);
+            button4.setIcon(null);
+            button5.setIcon(null);
+            button6.setIcon(null);
+            button7.setIcon(null);
+            button8.setIcon(null);
+            button9.setIcon(null);
+            count = 0;
+        }
+    }
+
+    // Остальные методы и main
+    // ...
+}
+Теперь у вас есть базовая структура клиент-серверной игры крестики-нолики. Клиенты подключаются к серверу, отправляют свои ходы, сервер обрабатывает их и возвращает результаты, такие как обновление доски, определение победителя или ничьи. Вы можете расширить этот базовый функционал, добавив более сложные проверки, улучшенные сообщения об ошибках и другие улучшения по мере необходимости.
