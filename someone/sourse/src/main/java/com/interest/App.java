@@ -162,6 +162,8 @@ public class App extends JFrame implements KeyListener
         mainPanel.add(gamePanel, "GAME_PANEL");
         mainPanel.add(settingsPanel, "SETTINGS_PANEL");
         mainPanel.add(settingsCustomizable, "SETTINGS_CUSTOMIZABLE");
+
+        
         
         frame.add(mainPanel);
         frame.setVisible(true);
@@ -234,9 +236,35 @@ public class App extends JFrame implements KeyListener
         settingsPanel.revalidate();
         settingsPanel.repaint();
     }
-    private static void openFileChooser()
+
+    // private static void customizeComponent(JComponent component) {
+    //     component.setBackground(Color.LIGHT_GRAY);
+    //     component.setForeground(Color.DARK_GRAY);
+    //     component.setFont(new Font("Arial", Font.BOLD, 14));
+
+    //     for (Component child : component.getComponents()) {
+    //         if (child instanceof JComponent) {
+    //             customizeComponent((JComponent) child);
+    //         }
+    //     }
+    // }
+
+    private static void openFileChooser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
     {
         JFileChooser pickMusic = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+        SwingUtilities.updateComponentTreeUI(pickMusic);
+
+        // pickMusic.setBackground(Color.LIGHT_GRAY);
+        // pickMusic.setForeground(Color.DARK_GRAY);
+        // pickMusic.setFont(new Font("Arial", Font.BOLD, 14));
+
+        // for (Component component : pickMusic.getComponents()) {
+        //     if (component instanceof JComponent) {
+        //         customizeComponent((JComponent) component);
+        //     }
+        // }
         
         int r = pickMusic.showOpenDialog(null);
         
@@ -264,7 +292,15 @@ public class App extends JFrame implements KeyListener
         */
         
         JButton pick = new JButton("Pick");
-        pick.addActionListener(ae -> openFileChooser());
+        pick.addActionListener(ae -> {
+            try {
+                openFileChooser();
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                    | UnsupportedLookAndFeelException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
         
         
         // Volume of music
@@ -272,8 +308,12 @@ public class App extends JFrame implements KeyListener
         * Ползунок (-... , 6)
         */
         sliderVolume = new JSlider(-20, 6);
-        sliderVolume.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
+        
+        sliderVolume.addChangeListener(new ChangeListener() 
+        {
+            @Override
+            public void stateChanged(ChangeEvent e) 
+            {
                 // меняем надпись
                 int value = ((JSlider)e.getSource()).getValue();
                 Music.setVolume(value);
@@ -353,6 +393,7 @@ public class App extends JFrame implements KeyListener
         new App();
         cardLayout.show(mainPanel, "SETTINGS_PANEL");
         System.out.println(Music.getMaxVolume());
+        
     }
     
 }
