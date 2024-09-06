@@ -17,10 +17,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.List;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class App extends JFrame implements KeyListener
@@ -38,10 +40,14 @@ public class App extends JFrame implements KeyListener
     private static JPanel settingsPanel;
     private static JPanel settingsCustomizable;
     private static JSlider sliderVolume;
-    
+    private static JLabel header;
+
+    //Colors
+    private static String net = "#16354D", button_main = "#6B99C3";
+
     public App() throws IOException
     {
-        //client
+        //
         
         
         // LOGO
@@ -63,61 +69,61 @@ public class App extends JFrame implements KeyListener
         mainPanel.requestFocusInWindow();
 
         gamePanel = new JPanel(new GridLayout(3, 3, 15, 15));
-        gamePanel.setBackground(Color.decode("#16354D"));
+        gamePanel.setBackground(Color.decode(net)); // COLOR OF NET
         gamePanel.addKeyListener(this);
         gamePanel.setFocusable(true);
         gamePanel.requestFocusInWindow();
 
         button1 = new JButton();
-        button1.setBackground(Color.decode("#6B99C3"));
+        button1.setBackground(Color.decode(button_main)); // COLOR OF BUTTONS (SAME AS BACKGROUND)
         button1.addKeyListener(this);
         button1.setFocusable(true);
         button1.requestFocusInWindow();
 
         button2 = new JButton();
-        button2.setBackground(Color.decode("#6B99C3"));
+        button2.setBackground(Color.decode(button_main));
         button2.addKeyListener(this);
         button2.setFocusable(true);
         button2.requestFocusInWindow();
 
         button3 = new JButton();
-        button3.setBackground(Color.decode("#6B99C3"));
+        button3.setBackground(Color.decode(button_main));
         button3.addKeyListener(this);
         button3.setFocusable(true);
         button3.requestFocusInWindow();
 
         button4 = new JButton();
-        button4.setBackground(Color.decode("#6B99C3"));
+        button4.setBackground(Color.decode(button_main));
         button4.addKeyListener(this);
         button4.setFocusable(true);
         button4.requestFocusInWindow();
 
         button5 = new JButton();
-        button5.setBackground(Color.decode("#6B99C3"));
+        button5.setBackground(Color.decode(button_main));
         button5.addKeyListener(this);
         button5.setFocusable(true);
         button5.requestFocusInWindow();
 
         button6 = new JButton();
-        button6.setBackground(Color.decode("#6B99C3"));
+        button6.setBackground(Color.decode(button_main));
         button6.addKeyListener(this);
         button6.setFocusable(true);
         button6.requestFocusInWindow();
 
         button7 = new JButton();
-        button7.setBackground(Color.decode("#6B99C3"));
+        button7.setBackground(Color.decode(button_main));
         button7.addKeyListener(this);
         button7.setFocusable(true);
         button7.requestFocusInWindow();
 
         button8 = new JButton();
-        button8.setBackground(Color.decode("#6B99C3"));
+        button8.setBackground(Color.decode(button_main));
         button8.addKeyListener(this);
         button8.setFocusable(true);
         button8.requestFocusInWindow();
 
         button9 = new JButton();
-        button9.setBackground(Color.decode("#6B99C3"));
+        button9.setBackground(Color.decode(button_main));
         button9.addKeyListener(this);
         button9.setFocusable(true);
         button9.requestFocusInWindow();
@@ -175,7 +181,7 @@ public class App extends JFrame implements KeyListener
         buttonGame = new JButton("Play");
         buttonMultiGame = new JButton("Multiplay");
         buttonSettings = new JButton("Settings");
-        JLabel header = new JLabel("Main Menu");
+        header = new JLabel("Main Menu");
         
         // Set preferred sizes
         buttonGame.setPreferredSize(new Dimension(300, 50));
@@ -183,12 +189,12 @@ public class App extends JFrame implements KeyListener
         buttonSettings.setPreferredSize(new Dimension(300, 50));
         header.setPreferredSize(new Dimension(300, 50));
         header.setFont(new Font("Main Menu", Font.PLAIN, 50));
-        header.setForeground(Color.decode("#6B99C3"));
-        buttonGame.setBackground(Color.decode("#6B99C3"));
-        buttonMultiGame.setBackground(Color.decode("#6B99C3"));
-        buttonSettings.setBackground(Color.decode("#6B99C3"));
-        header.setBackground(Color.decode("#6B99C3"));
-        settingsPanel.setBackground(Color.decode("#16354D"));
+        header.setForeground(Color.decode(button_main)); // COLOR OF ?TEXT? (SAME AS BACKGROUND)
+        buttonGame.setBackground(Color.decode(button_main));
+        buttonMultiGame.setBackground(Color.decode(button_main));
+        buttonSettings.setBackground(Color.decode(button_main));
+        header.setBackground(Color.decode(button_main));
+        settingsPanel.setBackground(Color.decode(net));
 
         buttonGame.addActionListener(ae -> actionPlay());
 
@@ -237,35 +243,15 @@ public class App extends JFrame implements KeyListener
         settingsPanel.repaint();
     }
 
-    // private static void customizeComponent(JComponent component) {
-    //     component.setBackground(Color.LIGHT_GRAY);
-    //     component.setForeground(Color.DARK_GRAY);
-    //     component.setFont(new Font("Arial", Font.BOLD, 14));
-
-    //     for (Component child : component.getComponents()) {
-    //         if (child instanceof JComponent) {
-    //             customizeComponent((JComponent) child);
-    //         }
-    //     }
-    // }
-
     private static void openFileChooser() throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException
     {
-        JFileChooser pickMusic = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 
-        UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-        SwingUtilities.updateComponentTreeUI(pickMusic);
-
-        // pickMusic.setBackground(Color.LIGHT_GRAY);
-        // pickMusic.setForeground(Color.DARK_GRAY);
-        // pickMusic.setFont(new Font("Arial", Font.BOLD, 14));
-
-        // for (Component component : pickMusic.getComponents()) {
-        //     if (component instanceof JComponent) {
-        //         customizeComponent((JComponent) component);
-        //     }
-        // }
         
+        JFileChooser pickMusic = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        
+
+
+
         int r = pickMusic.showOpenDialog(null);
         
         pickMusic.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -274,7 +260,6 @@ public class App extends JFrame implements KeyListener
         {
             Music.setFilePath(pickMusic.getSelectedFile().getAbsolutePath());
         }
-        //pickMusic.showOpenDialog(pickMusic);
 
         new Thread(new Runnable() {
             public void run()
@@ -282,6 +267,17 @@ public class App extends JFrame implements KeyListener
                     Music.playMusic();
                 }
         }).start();
+    }
+
+    public static List<Component> getAllComponents(final Container c) {
+        Component[] comps = c.getComponents();
+        List<Component> compList = new ArrayList<Component>();
+        for (Component comp : comps) {
+            compList.add(comp);
+            if (comp instanceof Container)
+                compList.addAll(getAllComponents((Container) comp));
+        }
+        return compList;
     }
 
     private static void SettingsApplication()
@@ -302,13 +298,31 @@ public class App extends JFrame implements KeyListener
             }
         });
         
+        String[] choices = {"Purple Sunset", "Rose dawn", "Blue Lagoon", "Green Forest"};
+        JComboBox<String> list = new JComboBox<String>(choices);
+
+        ImageIcon icon = new ImageIcon("F:\\work\\JAVA\\someone\\sourse\\src\\resources\\back.png");
+
+        JButton exit = new JButton();
+        exit.setIcon(icon);
+        exit.addActionListener(ae ->{
+            cardLayout.show(mainPanel, "SETTINGS_PANEL");
+            settingsCustomizable.remove(pick);
+            settingsCustomizable.remove(sliderVolume);
+            settingsCustomizable.remove(list);
+            settingsCustomizable.remove(exit);
+        });
         
         // Volume of music
         /*
         * Ползунок (-... , 6)
         */
-        sliderVolume = new JSlider(-20, 6);
-        
+
+        sliderVolume = new JSlider(-60,6);
+
+        sliderVolume.setOrientation(JSlider.VERTICAL);
+
+
         sliderVolume.addChangeListener(new ChangeListener() 
         {
             @Override
@@ -324,8 +338,51 @@ public class App extends JFrame implements KeyListener
         * Выпадающее меню
         * Custom color - юзер сам вписывает свои цвета
         */
-        settingsCustomizable.add(pick);
+
+        
+        ActionListener actionListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String item = (String)list.getSelectedItem();
+                
+                if(item.equals("Purple Sunset"))
+                {
+                    //https://color.romanuke.com/czvetovaya-palitra-4537/
+                    net = "#453C41";
+                    button_main = "#7B586B";
+                    changeColors();
+                }
+                if(item.equals("Rose dawn"))
+                {
+                    //https://color.romanuke.com/czvetovaya-palitra-4497/
+                    net = "#1C252C";
+                    button_main = "#E1D5D9";
+                    changeColors();
+                }
+                if(item.equals("Blue Lagoon"))
+                {
+                    //https://color.romanuke.com/czvetovaya-palitra-4542/
+                    net = "#16354D";
+                    button_main = "#6B99C3";
+                    changeColors();   
+                }
+                if(item.equals("Green Forest"))
+                {
+                    //https://color.romanuke.com/czvetovaya-palitra-4573/
+                    net = "#344C11";
+                    button_main = "#AEC670";
+                    changeColors(); 
+                    
+                }
+            }
+        };
+        list.addActionListener(actionListener);
+        list.setMaximumSize(list.getPreferredSize());
+        list.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        //settingsCustomizable.add(pick, BorderLayout.WEST);
         settingsCustomizable.add(sliderVolume);
+        //settingsCustomizable.add(list, BorderLayout.SOUTH);
+        //settingsCustomizable.add(exit);
     }
     
     //server
@@ -341,6 +398,28 @@ public class App extends JFrame implements KeyListener
         SettingsApplication();
     }
     
+    private static void changeColors()
+    {
+        //Main
+        gamePanel.setBackground(Color.decode(net));
+        settingsPanel.setBackground(Color.decode(net));
+
+        //Secondary
+        button1.setBackground(Color.decode(button_main));
+        button2.setBackground(Color.decode(button_main));
+        button3.setBackground(Color.decode(button_main));
+        button4.setBackground(Color.decode(button_main));
+        button5.setBackground(Color.decode(button_main));
+        button6.setBackground(Color.decode(button_main));
+        button7.setBackground(Color.decode(button_main));
+        button8.setBackground(Color.decode(button_main));
+        button9.setBackground(Color.decode(button_main));
+        header.setForeground(Color.decode(button_main)); 
+        buttonGame.setBackground(Color.decode(button_main));
+        buttonMultiGame.setBackground(Color.decode(button_main));
+        buttonSettings.setBackground(Color.decode(button_main));
+        header.setBackground(Color.decode(button_main));
+    }
     
     private static void actionMultiGame() //ловушка насмерть
     {
@@ -399,10 +478,10 @@ public class App extends JFrame implements KeyListener
 }
 
 /*TODO
-2) Отловка ESC + настройки (лайтовые) (1, 0.5)
-3) Клиент + сервер
-4) Темы (кастом) + музыка (каастом)
-5) Анимации (палочка победителя)
+2) Отловка ESC + настройки (лайтовые) (1, 0.8)
+3) Клиент + сервер (0, 0.2)
+4) Темы (кастом) + музыка (каастом) (1 (хуево сделанный), 1)
+5) Анимации (палочка победителя) (0)
 */
 
 
