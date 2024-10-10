@@ -32,7 +32,7 @@ public class Main {
     man1.gender = "Man";
 
     Women woman1 = new Women();
-    woman1.name = "Alis";
+    woman1.name = "Maxine";
     woman1.gender = "Woman";
 
 
