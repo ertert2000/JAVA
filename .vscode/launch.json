@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
+            "mainClass": "com.proghelp.Main",
+            "projectName": "helplib3"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
             "mainClass": "lib.poject1.Main",
             "projectName": "lib1"
         },

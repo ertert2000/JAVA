@@ -303,15 +303,15 @@ public class App extends JFrame implements KeyListener
 
         ImageIcon icon = new ImageIcon("F:\\work\\JAVA\\someone\\sourse\\src\\resources\\back.png");
 
-        JButton exit = new JButton();
-        exit.setIcon(icon);
-        exit.addActionListener(ae ->{
-            cardLayout.show(mainPanel, "SETTINGS_PANEL");
-            settingsCustomizable.remove(pick);
-            settingsCustomizable.remove(sliderVolume);
-            settingsCustomizable.remove(list);
-            settingsCustomizable.remove(exit);
-        });
+        // JButton exit = new JButton();
+        // exit.setIcon(icon);
+        // exit.addActionListener(ae ->{
+        //     cardLayout.show(mainPanel, "SETTINGS_PANEL");
+        //     settingsCustomizable.remove(pick);
+        //     settingsCustomizable.remove(sliderVolume);
+        //     settingsCustomizable.remove(list);
+        //     settingsCustomizable.remove(exit);
+        // });
         
         // Volume of music
         /*
@@ -380,7 +380,7 @@ public class App extends JFrame implements KeyListener
         list.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         //settingsCustomizable.add(pick, BorderLayout.WEST);
-        settingsCustomizable.add(sliderVolume);
+        //settingsCustomizable.add(sliderVolume);
         //settingsCustomizable.add(list, BorderLayout.SOUTH);
         //settingsCustomizable.add(exit);
     }
