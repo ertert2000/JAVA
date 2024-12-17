@@ -2,10 +2,12 @@ package com.proghelp;
 
 import java.awt.*;
 
-import javax.sql.rowset.serial.SerialStruct;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author Половникова Алиса 3312
@@ -23,12 +25,13 @@ public class Main {
  *	private JTable table - таблица
  */
 	public static JFrame frame;
-	public static DefaultTableModel model;
+	public static DoctorTableModel model;
 	private JScrollPane scroll;
 	public static JTable table;
-	public static Object[][] data;
+	public static List<Doctor> data = new ArrayList<>();
     public static Object[] columns = new String[] {"ФИО пациента", "Время", "Врач"};
     public static int quant = 3;
+
 	
 	public void show() {
 		// Создание окна
@@ -71,11 +74,18 @@ public class Main {
         b2.setBorder(BorderFactory.createLineBorder(new java.awt.Color(69, 69, 69), 2));
         b2.addActionListener(ae -> logic.b2Click());
     
-        JButton b3 = new JButton("Редактировать");
+        JButton b3 = new JButton("Данные о пациентах");
         b3.setBackground(new java.awt.Color(169, 169, 169));
         b3.setForeground(new java.awt.Color(69, 69, 69));
         b3.setBorder(BorderFactory.createLineBorder(new java.awt.Color(69, 69, 69), 2));
-    
+        b3.addActionListener(ae -> logic.dataPatientClick());
+
+        JButton reportGenerateButton = new JButton("генерация отчетов");
+        reportGenerateButton.setBackground(new java.awt.Color(169, 169, 169));
+        reportGenerateButton.setForeground(new java.awt.Color(69, 69, 69));
+        reportGenerateButton.setBorder(BorderFactory.createLineBorder(new java.awt.Color(69, 69, 69), 2));
+        reportGenerateButton.addActionListener(ae -> logic.reportGenerateClick());
+
         // Создание поиска
         JTextField b4 = new JTextField("Введите запрос...");
         b4.setBackground(new java.awt.Color(169, 169, 169));
@@ -87,7 +97,7 @@ public class Main {
         b5.setForeground(new java.awt.Color(69, 69, 69));
         b5.setBorder(BorderFactory.createLineBorder(new java.awt.Color(69, 69, 69), 2));
 
-        Main.model = new DefaultTableModel(new Object[][]{}, new String[] {"ФИО пациента", "Время", "Врач"});
+        Main.model = new DoctorTableModel(data);
         table = new JTable(model);
         table.setBackground(new java.awt.Color(169, 169, 169));
         table.getTableHeader().setOpaque(false);
@@ -135,6 +145,8 @@ public class Main {
     
         mainGrid.gridy = 3;
         frame.add(b3, mainGrid);
+        mainGrid.gridy = 4;
+        frame.add(reportGenerateButton, mainGrid);
     
         // Поле для поиска
         mainGrid.gridx = 1;
@@ -164,7 +176,8 @@ public class Main {
         frame.setVisible(true);
     
 	}
-	
+    
+    
 	public static void main(String[] args) 
     {
 		new Main().show();

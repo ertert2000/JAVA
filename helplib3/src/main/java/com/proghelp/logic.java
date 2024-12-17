@@ -1,6 +1,10 @@
 package com.proghelp;
 import java.awt.*;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 import javax.swing.*;
 /**
  * @author Половникова Алиса 3312
@@ -8,10 +12,11 @@ import javax.swing.*;
  */
 public class logic 
 {
-	
+	private static final Logger logger = LogManager.getLogger(logic.class);
+
 	private static JFrame addWindow;
 	
-    private static void saving(JTextField nameP, JTextField time, JTextField nameD) throws EmptyFieldException
+    private static void saving(JTextField nameP, JTextField time, JTextField nameD, JTextField specialization) throws EmptyFieldException
     {
         try
         {
@@ -21,37 +26,64 @@ public class logic
                 throw new EmptyFieldException("Поле 'Время' не может быть пустым.");
             if (nameD.getText().isEmpty())
                 throw new EmptyFieldException("Поле 'Врач' не может быть пустым.");
+            if (specialization.getText().isEmpty())
+                throw new EmptyFieldException("Поле 'Врач' не может быть пустым.");
 
-            Main.model.addRow(new Object[] {nameP.getText(), time.getText(), nameD.getText()});
+            Doctor doctor = new Doctor(nameD.getText(), specialization.getText(), time.getText());
+
+            Main.model.addRow(doctor);
             Main.quant++;
+
+            logger.info("Добавлена запись: " + nameP.getText() + ", " + time.getText() + ", " + nameD.getText() + ", " + specialization.getText());
         }
         catch (EmptyFieldException e)
         {
+            logger.error("Ошибка при сохранении данных: " + e.getMessage(), e);
             JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
         }
         catch (Exception e)
         {
+            logger.error("Неизвестная ошибка: " + e.getMessage(), e);
             JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
         }
         
         addWindow.dispose();
     }
 
+    public static void reportGenerateClick()
+    {
+        ReportGenerator.generateReport(Main.table);
+        
+    }
+
 	public static void b1Click()
 	{
+
         addWindow = new JFrame("Добавление");
         addWindow.setResizable(false);
 		addWindow.setSize(400, 200);
 		addWindow.setLocation(600, 100);
 		addWindow.getContentPane().setBackground(new java.awt.Color(90, 90, 90));
         
-        
+        logger.info("Окно добавления данных открыто.");
+
+
         JLabel lable1 = new JLabel("Имя пациента");
         lable1.setForeground(Color.WHITE);
         JLabel lable2 = new JLabel("Время");
         lable2.setForeground(Color.WHITE);
         JLabel lable3 = new JLabel("Имя врача");
         lable3.setForeground(Color.WHITE);
+        JLabel lable4 = new JLabel("специализация");
+        lable4.setForeground(Color.WHITE);
+        
+        JTextField specialization = new JTextField("");
+        specialization.setPreferredSize(new Dimension(300, 25));
+        specialization.setBackground(new java.awt.Color(169, 169, 169));
+        specialization.setForeground(new java.awt.Color(69, 69, 69));
+        specialization.setBorder(BorderFactory.createLineBorder(new java.awt.Color(69, 69, 69), 2));
+        
+        
         JTextField nameP = new JTextField("");
         nameP.setPreferredSize(new Dimension(300, 25));
         nameP.setBackground(new java.awt.Color(169, 169, 169));
@@ -77,19 +109,21 @@ public class logic
         save.setBorder(BorderFactory.createLineBorder(new java.awt.Color(69, 69, 69), 2));
         save.addActionListener(ae -> {
             try {
-                logic.saving(nameP, time, nameD);
+                logic.saving(nameP, time, nameD, specialization);
             } catch (EmptyFieldException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
             }
         });
         
-        addWindow.setLayout(new GridLayout(4, 2));
-        addWindow.add(lable1);
-        addWindow.add(nameP);
-        addWindow.add(lable2);
-        addWindow.add(time);
+        addWindow.setLayout(new GridLayout(5, 2));
         addWindow.add(lable3);
         addWindow.add(nameD);
+        addWindow.add(lable2);
+        addWindow.add(time);
+        addWindow.add(lable4);
+        addWindow.add(specialization);
+        addWindow.add(lable1);
+        addWindow.add(nameP);
         addWindow.add(save);
 
         
@@ -99,7 +133,8 @@ public class logic
 	}
 
 	
-	public static void b2Click(){
+	public static void b2Click()
+    {
 		try 
         {
             int selectedRow = Main.table.getSelectedRow();
@@ -107,13 +142,20 @@ public class logic
             {
                 Main.model.removeRow(selectedRow);
                 JOptionPane.showMessageDialog(Main.frame, "Удаление прошло успешно");
+                logger.info("Удалена запись: " + selectedRow);
             } 
             else
                 throw new Exception("Не выбрана строка для удаления");
         } 
         catch (Exception e) 
         {
+            logger.error("Ошибка при удалении: " + e.getMessage(), e);
             JOptionPane.showMessageDialog(Main.frame, e.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
         }
 	}
+
+    public static void dataPatientClick()
+    {
+
+    }
 }

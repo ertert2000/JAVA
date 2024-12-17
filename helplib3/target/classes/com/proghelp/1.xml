@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Appointments>
+    <Appointment>
+        <Врач>dsgdsg</Врач>
+        <Время>dsgdsg</Время>
+        <specialization>dsgdsg</specialization>
+        <pacient>dsgdsg</pacient>
+    </Appointment>
+</Appointments>

@@ -1,0 +1,19 @@
+cmd.exe
+/X
+/C
+""C:\Program Files\Java\jdk-22\bin\javadoc.exe" @options @packages"
+F:\work\JAVA\unittest\target\site\apidocs\allclasses-index.html = 1734022301604
+F:\work\JAVA\unittest\target\site\apidocs\allpackages-index.html = 1734022301611
+F:\work\JAVA\unittest\target\site\apidocs\element-list = 1734022301543
+F:\work\JAVA\unittest\target\site\apidocs\help-doc.html = 1734022301645
+F:\work\JAVA\unittest\target\site\apidocs\index-all.html = 1734022301633
+F:\work\JAVA\unittest\target\site\apidocs\index.html = 1734022301639
+F:\work\JAVA\unittest\target\site\apidocs\member-search-index.js = 1734022301619
+F:\work\JAVA\unittest\target\site\apidocs\module-search-index.js = 1734022301613
+F:\work\JAVA\unittest\target\site\apidocs\options = 1734022300484
+F:\work\JAVA\unittest\target\site\apidocs\overview-tree.html = 1734022301592
+F:\work\JAVA\unittest\target\site\apidocs\package-search-index.js = 1734022301615
+F:\work\JAVA\unittest\target\site\apidocs\packages = 1734022300486
+F:\work\JAVA\unittest\target\site\apidocs\search.html = 1734022301636
+F:\work\JAVA\unittest\target\site\apidocs\tag-search-index.js = 1734022301620
+F:\work\JAVA\unittest\target\site\apidocs\type-search-index.js = 1734022301617
